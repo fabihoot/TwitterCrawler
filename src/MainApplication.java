@@ -29,7 +29,7 @@ public class MainApplication {
 
 }
 
-//Hilfsklasse für eine GUI zur einfacheren Bedienung des Crawlers
+//Hilfsklasse fÃ¼r eine GUI zur einfacheren Bedienung des Crawlers
 class MainFrame extends JFrame {
 	JFrame frame;
 	private JTextField txtTaskNumber;

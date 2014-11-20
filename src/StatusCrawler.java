@@ -21,7 +21,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class StatusCrawler {
 
-	// Authentifizierungstokens f�r den Zugriff auf die Twitter API
+	// Authentifizierungstokens für den Zugriff auf die Twitter API
 	// Bite eigene Logins eintragen!
 	private static final String CONSUMER_KEY = "jsT8x1bQpzWFvUWD10zyA";
 	private static final String CONSUMER_SECRET = "221c0J7TFprjEAmIQSdhDWzwWtPscNb8eS6jDVlc";
