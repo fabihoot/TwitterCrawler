@@ -52,7 +52,7 @@ public class StatusListener implements twitter4j.StatusListener {
 		}
 		return false;
 	}
-	//Bedingung, dass nur Tweets, die einen Ländercode enthalten, gespeichert werden
+	//Bedingung, dass nur Tweets, die einen LÃ¼ndercode enthalten, gespeichert werden
 	public boolean saveTweetWithCountryCode(){
 		if(!status.getPlace().getCountryCode().equals("")){
 			return true;
@@ -61,7 +61,7 @@ public class StatusListener implements twitter4j.StatusListener {
 	}
 
 	//Methode wird aufgerufen wenn ein ein Tweet gecrawlet wurde
-	//Status-Objekt enthält alle Informationen die von Twitter zur Verfügung gestellt werden
+	//Status-Objekt enthÃ¼lt alle Informationen die von Twitter zur Verfgung gestellt werden
 	public void onStatus(Status status) {
 		this.status = status;
 
@@ -108,13 +108,13 @@ public class StatusListener implements twitter4j.StatusListener {
 		}
 	}
 
-	// Erstellt für jeden Tweet ein Kindelement mit der ID des Users
+	// Erstellt fÃ¼r jeden Tweet ein Kindelement mit der ID des Users
 	private void createElementId(Element tweet) {
 
-		// Auslesen des gewünschten Wertes aus dem Statusobjekt
+		// Auslesen des gewÃ¼nschten Wertes aus dem Statusobjekt
 		// Erstellen des Tag-Elements mit entspr. Namen
-		// Einfügen des Wertes in das Tag-Element
-		// Anhängen des Tag-Elements in die Baumstruktur des .xml-Files
+		// EinfÃ¼gen des Wertes in das Tag-Element
+		// AnhÃ¤ngen des Tag-Elements in die Baumstruktur des .xml-Files
 
 		String valueID = String.valueOf(status.getUser().getId());
 		Element fieldId = doc.createElement("id");
@@ -122,7 +122,7 @@ public class StatusListener implements twitter4j.StatusListener {
 		tweet.appendChild(fieldId);
 	}
 
-	// Erstellt für jeden Tweet ein Kindelement mit dem Namen des Users
+	// Erstellt fÃ¼r jeden Tweet ein Kindelement mit dem Namen des Users
 	private void createElementUser(Element tweet) {
 		String valueUser = status.getUser().getName();
 		Element fieldUser = doc.createElement("user");
@@ -130,7 +130,7 @@ public class StatusListener implements twitter4j.StatusListener {
 		tweet.appendChild(fieldUser);
 	}
 
-	// Erstellt für jeden Tweet ein Kindelement mit dem Nickname des Users
+	// Erstellt fÃ¼r jeden Tweet ein Kindelement mit dem Nickname des Users
 	private void createElementScreenname(Element tweet) {
 		String valueScreenname = status.getUser().getScreenName();
 		Element fieldScreenName = doc.createElement("screenName");
@@ -138,7 +138,7 @@ public class StatusListener implements twitter4j.StatusListener {
 		tweet.appendChild(fieldScreenName);
 	}
 
-	// Erstellt für jeden Tweet ein Kindelement mit dem Text des Tweets
+	// Erstellt fÃ¼r jeden Tweet ein Kindelement mit dem Text des Tweets
 	private void createElementText(Element tweet) {
 		String valueText = status.getText();
 		Element fieldText = doc.createElement("text");
@@ -146,7 +146,7 @@ public class StatusListener implements twitter4j.StatusListener {
 		tweet.appendChild(fieldText);
 	}
 
-	// Erstellt für jeden Tweet ein Kindelement mit dem Datum und der Uhrzeit
+	// Erstellt fÃ¼r jeden Tweet ein Kindelement mit dem Datum und der Uhrzeit
 	// des Tweets
 	private void createElementDate(Element tweet) {
 		String valueTime = String.valueOf(status.getCreatedAt());
@@ -155,7 +155,7 @@ public class StatusListener implements twitter4j.StatusListener {
 		tweet.appendChild(fieldTime);
 	}
 
-	// Erstellt für jeden Tweet ein Kindelement mit der eingestellten Sprache
+	// Erstellt fÃ¼r jeden Tweet ein Kindelement mit der eingestellten Sprache
 	// des Users
 	private void createElementLanguage(Element tweet) {
 		String valueLanguage = status.getUser().getLang();
@@ -164,7 +164,7 @@ public class StatusListener implements twitter4j.StatusListener {
 		tweet.appendChild(fieldLang);
 	}
 
-	// Erstellt für jeden Tweet ein Kindelement mit dem Ort des Users
+	// Erstellt fÃ¼r jeden Tweet ein Kindelement mit dem Ort des Users
 	private void createElementLocation(Element tweet) {
 		String valueLocation = status.getUser().getLocation();
 		Element fieldLocation = doc.createElement("location");
@@ -172,7 +172,7 @@ public class StatusListener implements twitter4j.StatusListener {
 		tweet.appendChild(fieldLocation);
 	}
 
-	// Erstellt für jeden Tweet ein Kindelement mit dem Ländercode des Users
+	// Erstellt fÃ¼r jeden Tweet ein Kindelement mit dem LÃ¼ndercode des Users
 	private void createElementCountryCode(Element tweet) {
 		String valueCountryCode = status.getPlace().getCountryCode();
 		Element fieldCountryCode = doc.createElement("countryCode");
@@ -180,7 +180,7 @@ public class StatusListener implements twitter4j.StatusListener {
 		tweet.appendChild(fieldCountryCode);
 	}
 
-	// Erstellt für jeden Tweet eine Auflistung der verwendeten Hashtags
+	// Erstellt fÃ¼r jeden Tweet eine Auflistung der verwendeten Hashtags
 	private void createElementHashtag(Element tweet) {
 		HashtagEntity[] allHashtags = status.getHashtagEntities();
 		if (allHashtags.length > 0) {
