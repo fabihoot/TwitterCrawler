@@ -7,6 +7,8 @@ import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 
+import java.util.List;
+
 public class StatusListener implements twitter4j.StatusListener {
 
 	private Document mDoc;
@@ -48,7 +50,6 @@ public class StatusListener implements twitter4j.StatusListener {
 				createElementUser(tweet);
 				createElementScreenname(tweet);
 				createElementText(tweet);
-				createElementHashtag(tweet);
 
 				System.out.println("tweet added");
 			} catch (DOMException e) {
@@ -91,6 +92,22 @@ public class StatusListener implements twitter4j.StatusListener {
 	public boolean tweetWithCountryCode(String countryCode) {
 		System.out.println(mStatus.getPlace().getCountryCode());
 		return mStatus.getPlace().getCountryCode().equals(countryCode);
+	}
+
+	//Bedingung, dass nur Tweets gespeichert werden, welche einem der übergebenen Hashtags entsprechen
+	public boolean tweetContainsHashtags(List<String> expectedHashtags) {
+		if (tweetContainsHashtag()) {
+			for (String expectedHashtag : expectedHashtags)	{
+				for (HashtagEntity entity : mStatus.getHashtagEntities()) {
+					System.out.println(entity.getText());
+					if (entity.getText().toLowerCase().equals(expectedHashtag.toLowerCase())) {
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/*********************************************************
