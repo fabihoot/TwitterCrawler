@@ -9,220 +9,204 @@ import twitter4j.StatusDeletionNotice;
 
 public class StatusListener implements twitter4j.StatusListener {
 
-	private Document doc;
-	private Element rootElement;
-	private StatusCrawler crawler;
-	public int tweetCounter = 0;
-	private Status status;
-	private int taskNumber;
+	private Document mDoc;
+	private Element mRootElement;
+	private StatusCrawler mCrawler;
+	public int mTweetCounter = 0;
+	private Status mStatus;
+	private int mTaskNumber;
 
 	// Legt die maximale Anzahl der Tweets fest die gecrawlet werden soll
-	public static final int maxtweets = 10;
+	public static final int sMaxTweets = 10;
 
-	public StatusListener(Document doc, Element rootElement,
-			StatusCrawler crawler, int taskNumber) {
-		this.doc = doc;
-		this.rootElement = rootElement;
-		this.crawler = crawler;
-		this.taskNumber = taskNumber;
-	}
-
-	//Bedingung, dass Tweets nur in einer best. Sprache gespeichert werden
-	public boolean saveTweetsInLanguage() {
-		String language = "en";
-		if (status.getUser().getLang().equals(language)) {
-			return true;
-		}
-		return false;
-	}
-
-	//Bedingung, dass nur Tweets, die ein best. Zeichen (Hashtag) enthalten, gespeichert werden
-	public boolean saveTweetsWithHashtag() {
-		String hashtag = "#";
-		if (status.getText().contains(hashtag)) {
-			return true;
-		}
-		return false;
-	}
-
-	//Bedingung, dass nur Tweets, die ein Hashtag enthalten, gespeichert werden
-	public boolean saveTweetsWithTag() {
-		if (status.getHashtagEntities().length > 0) {
-			return true;
-		}
-		return false;
-	}
-	//Bedingung, dass nur Tweets, die einen Lündercode enthalten, gespeichert werden
-	public boolean saveTweetWithCountryCode(){
-		if(!status.getPlace().getCountryCode().equals("")){
-			return true;
-		}
-		return false;
+	public StatusListener(Document doc, Element rootElement, StatusCrawler crawler, int taskNumber) {
+		mDoc = doc;
+		mRootElement = rootElement;
+		mCrawler = crawler;
+		mTaskNumber = taskNumber;
 	}
 
 	//Methode wird aufgerufen wenn ein ein Tweet gecrawlet wurde
-	//Status-Objekt enthült alle Informationen die von Twitter zur Verfgung gestellt werden
+	//Status-Objekt enthüllt alle Informationen die von Twitter zur Verfgung gestellt werden
 	public void onStatus(Status status) {
-		this.status = status;
+		mStatus = status;
 
-		//Abfrage der Bedingungen damit ein Tweet gespeichert werden soll
-		boolean conditionA = saveTweetsInLanguage();
-		boolean conditionB = saveTweetsWithHashtag();
-		boolean conditionC = saveTweetsWithTag();
-		boolean conditionD = saveTweetWithCountryCode();
-		if (conditionC) {
-			System.out.println("tweet saved");
+		//Abfrage ob ein Tweet gespeichert werden soll
+		boolean condition = false;
+		if (condition) {
+			mTweetCounter++;
+
+			// Wurzelelement fuer jeden Tweet erstellen
+			try {
+				Element tweet = mDoc.createElement("tweet");
+				mRootElement.appendChild(tweet);
+
+				// Element erstellen mit Inhalt fuellen und in die Baumstruktur
+				// einhaengen
+
+				createElementId(tweet);
+				createElementUser(tweet);
+				createElementScreenname(tweet);
+				createElementText(tweet);
+				createElementHashtag(tweet);
+
+				System.out.println("tweet added");
+			} catch (DOMException e) {
+				e.printStackTrace();
+			}
+
+			//Abbruchbedingung wenn die maximale Anzahl der Tweets erreicht wurde
+			if (mTweetCounter >= sMaxTweets) {
+				mCrawler.writeXML(mTaskNumber);
+			}
 		} else {
-			System.out.println("tweet not saved");
-			return;
-		}
-
-		//Abbruchbedingung wenn die maximale Anzahl der Tweets erreicht wurde
-		if (tweetCounter >= maxtweets) {
-			crawler.writeXML(taskNumber);
-			return;
-		}
-
-		tweetCounter++;
-
-		// Wurzelelement fuer jeden Tweet erstellen
-		try {
-			Element tweet = doc.createElement("tweet");
-			rootElement.appendChild(tweet);
-
-			// Element erstellen mit Inhalt fuellen und in die Baumstruktur
-			// einhaengen
-
-			createElementId(tweet);
-			createElementUser(tweet);
-			createElementScreenname(tweet);
-			createElementText(tweet);
-			//createElementDate(tweet);
-			// createElementLanguage(tweet);
-			// createElementLocation(tweet);
-			//createElementCountryCode(tweet);
-			createElementHashtag(tweet);
-
-		} catch (DOMException e) {
-			e.printStackTrace();
+			System.out.println("tweet not added");
 		}
 	}
 
+	/*********************************************************
+	 *
+	 * Hier werden die Bedingungen definiert,nach denen Tweets
+	 * untersucht werden sollen
+	 *
+	 *********************************************************/
+
+	//Bedingung, dass Tweets nur in einer best. Sprache gespeichert werden
+	public boolean tweetWithLanguage(String language) {
+		return mStatus.getUser().getLang().equals(language);
+	}
+
+	//Bedingung, dass nur Tweets, die ein best. Zeichen (Hashtag) enthalten, gespeichert werden
+	public boolean tweetContainsHash() {
+		String hashtag = "#";
+		return mStatus.getText().contains(hashtag);
+	}
+
+	//Bedingung, dass nur Tweets, die ein Hashtag enthalten, gespeichert werden
+	public boolean tweetContainsHashtag() {
+		return mStatus.getHashtagEntities().length > 0;
+	}
+
+	//Bedingung, dass nur Tweets, die einen Lündercode enthalten, gespeichert werden
+	public boolean tweetWithCountryCode(String countryCode) {
+		System.out.println(mStatus.getPlace().getCountryCode());
+		return mStatus.getPlace().getCountryCode().equals(countryCode);
+	}
+
+	/*********************************************************
+	 *
+	 * Hier stehen die Aufrufe für das Ablegen von
+	 * Informationen im XML
+	 *
+	 *********************************************************/
+
 	// Erstellt für jeden Tweet ein Kindelement mit der ID des Users
 	private void createElementId(Element tweet) {
-
 		// Auslesen des gewünschten Wertes aus dem Statusobjekt
 		// Erstellen des Tag-Elements mit entspr. Namen
 		// Einfügen des Wertes in das Tag-Element
 		// Anhängen des Tag-Elements in die Baumstruktur des .xml-Files
 
-		String valueID = String.valueOf(status.getUser().getId());
-		Element fieldId = doc.createElement("id");
-		fieldId.appendChild(doc.createTextNode(valueID));
+		String valueID = String.valueOf(mStatus.getUser().getId());
+		Element fieldId = mDoc.createElement("id");
+		fieldId.appendChild(mDoc.createTextNode(valueID));
 		tweet.appendChild(fieldId);
 	}
 
 	// Erstellt für jeden Tweet ein Kindelement mit dem Namen des Users
 	private void createElementUser(Element tweet) {
-		String valueUser = status.getUser().getName();
-		Element fieldUser = doc.createElement("user");
-		fieldUser.appendChild(doc.createTextNode(valueUser));
+		String valueUser = mStatus.getUser().getName();
+		Element fieldUser = mDoc.createElement("user");
+		fieldUser.appendChild(mDoc.createTextNode(valueUser));
 		tweet.appendChild(fieldUser);
 	}
 
 	// Erstellt für jeden Tweet ein Kindelement mit dem Nickname des Users
 	private void createElementScreenname(Element tweet) {
-		String valueScreenname = status.getUser().getScreenName();
-		Element fieldScreenName = doc.createElement("screenName");
-		fieldScreenName.appendChild(doc.createTextNode(valueScreenname));
+		String valueScreenname = mStatus.getUser().getScreenName();
+		Element fieldScreenName = mDoc.createElement("screenName");
+		fieldScreenName.appendChild(mDoc.createTextNode(valueScreenname));
 		tweet.appendChild(fieldScreenName);
 	}
 
 	// Erstellt für jeden Tweet ein Kindelement mit dem Text des Tweets
 	private void createElementText(Element tweet) {
-		String valueText = status.getText();
-		Element fieldText = doc.createElement("text");
-		fieldText.appendChild(doc.createTextNode(valueText));
+		String valueText = mStatus.getText();
+		Element fieldText = mDoc.createElement("text");
+		fieldText.appendChild(mDoc.createTextNode(valueText));
 		tweet.appendChild(fieldText);
 	}
 
 	// Erstellt für jeden Tweet ein Kindelement mit dem Datum und der Uhrzeit
 	// des Tweets
 	private void createElementDate(Element tweet) {
-		String valueTime = String.valueOf(status.getCreatedAt());
-		Element fieldTime = doc.createElement("time");
-		fieldTime.appendChild(doc.createTextNode(valueTime));
+		String valueTime = String.valueOf(mStatus.getCreatedAt());
+		Element fieldTime = mDoc.createElement("time");
+		fieldTime.appendChild(mDoc.createTextNode(valueTime));
 		tweet.appendChild(fieldTime);
 	}
 
 	// Erstellt für jeden Tweet ein Kindelement mit der eingestellten Sprache
 	// des Users
 	private void createElementLanguage(Element tweet) {
-		String valueLanguage = status.getUser().getLang();
-		Element fieldLang = doc.createElement("language");
-		fieldLang.appendChild(doc.createTextNode(valueLanguage));
+		String valueLanguage = mStatus.getUser().getLang();
+		Element fieldLang = mDoc.createElement("language");
+		fieldLang.appendChild(mDoc.createTextNode(valueLanguage));
 		tweet.appendChild(fieldLang);
 	}
 
 	// Erstellt für jeden Tweet ein Kindelement mit dem Ort des Users
 	private void createElementLocation(Element tweet) {
-		String valueLocation = status.getUser().getLocation();
-		Element fieldLocation = doc.createElement("location");
-		fieldLocation.appendChild(doc.createTextNode(valueLocation));
+		String valueLocation = mStatus.getUser().getLocation();
+		Element fieldLocation = mDoc.createElement("location");
+		fieldLocation.appendChild(mDoc.createTextNode(valueLocation));
 		tweet.appendChild(fieldLocation);
 	}
 
 	// Erstellt für jeden Tweet ein Kindelement mit dem Lündercode des Users
 	private void createElementCountryCode(Element tweet) {
-		String valueCountryCode = status.getPlace().getCountryCode();
-		Element fieldCountryCode = doc.createElement("countryCode");
-		fieldCountryCode.appendChild(doc.createTextNode(valueCountryCode));
+		String valueCountryCode = mStatus.getPlace().getCountryCode();
+		Element fieldCountryCode = mDoc.createElement("countryCode");
+		fieldCountryCode.appendChild(mDoc.createTextNode(valueCountryCode));
 		tweet.appendChild(fieldCountryCode);
 	}
 
 	// Erstellt für jeden Tweet eine Auflistung der verwendeten Hashtags
 	private void createElementHashtag(Element tweet) {
-		HashtagEntity[] allHashtags = status.getHashtagEntities();
+		HashtagEntity[] allHashtags = mStatus.getHashtagEntities();
 		if (allHashtags.length > 0) {
-			Element fieldHashtags = doc.createElement("hashtags");
+			Element fieldHashtags = mDoc.createElement("hashtags");
 			for (HashtagEntity hashtagEntity : allHashtags) {
-				Element fieldTag = doc.createElement("tag");
-				fieldTag.appendChild(doc.createTextNode(hashtagEntity.getText()));
+				Element fieldTag = mDoc.createElement("tag");
+				fieldTag.appendChild(mDoc.createTextNode(hashtagEntity.getText()));
 				fieldHashtags.appendChild(fieldTag);
 			}
 			tweet.appendChild(fieldHashtags);
 		}
-
 	}
 
 	@Override
 	public void onTrackLimitationNotice(int arg0) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onException(Exception arg0) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onDeletionNotice(StatusDeletionNotice arg0) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onScrubGeo(long arg0, long arg1) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onStallWarning(StallWarning arg0) {
 		// TODO Auto-generated method stub
-
 	}
-
 }

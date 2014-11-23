@@ -1,5 +1,4 @@
 import java.io.File;
-import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,8 +31,6 @@ public class StatusCrawler {
 	public StatusListener listener;
 	private TwitterStream twitterStream;
 
-	private DocumentBuilderFactory docFactory;
-	private DocumentBuilder docBuilder;
 	private Document doc;
 	private Element rootElement;
 
@@ -41,15 +38,14 @@ public class StatusCrawler {
 		initAuth();
 		initXML();
 		initStream(taskNumber);
-
 	}
 
 	public int getTweetCount() {
-		return listener.tweetCounter;
+		return listener.mTweetCounter;
 	}
 
 	public int getMaxTweetCount() {
-		return listener.maxtweets;
+		return StatusListener.sMaxTweets;
 	}
 
 	public void run() {
@@ -64,7 +60,6 @@ public class StatusCrawler {
 		listener = new StatusListener(doc, rootElement, this, taskNumber);
 		twitterStream = new TwitterStreamFactory(config.build()).getInstance();
 		twitterStream.addListener(listener);
-
 	}
 
 	private void setAuth() {
@@ -73,26 +68,21 @@ public class StatusCrawler {
 				.setOAuthConsumerSecret(CONSUMER_SECRET)
 				.setOAuthAccessToken(ACCESS_TOKEN)
 				.setOAuthAccessTokenSecret(ACCESS_TOKEN_SECRET);
-
 	}
 
 	private void initXML() {
-
 		try {
-			docFactory = DocumentBuilderFactory.newInstance();
-			docBuilder = docFactory.newDocumentBuilder();
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 			doc = docBuilder.newDocument();
 			rootElement = doc.createElement("root");
 			doc.appendChild(rootElement);
-
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public void writeXML(int taskNumber) {
-
 		try {
 			TransformerFactory transformerFactory = TransformerFactory
 					.newInstance();
@@ -120,7 +110,5 @@ public class StatusCrawler {
 			e.printStackTrace();
 
 		}
-
 	}
-
 }
