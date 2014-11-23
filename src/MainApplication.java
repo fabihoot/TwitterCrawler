@@ -19,6 +19,14 @@ public class MainApplication {
 		crawler.run();
 	}
 
+	public static void shutdown() {
+		if (crawler != null) {
+			crawler.shutdown();
+		}
+
+		System.exit(0);
+	}
+
 	public static int getTweetCount() {
 		return crawler.getTweetCount();
 	}
@@ -58,15 +66,19 @@ class MainFrame extends JFrame {
 		frame.getContentPane().add(txtTaskNumber);
 		txtTaskNumber.setColumns(10);
 
-		JButton btnStart = new JButton("Starte Crawler");
-		btnStart.setBounds(12, 57, 141, 25);
-		frame.getContentPane().add(btnStart);
+		JButton startButton = new JButton("Starte Crawler");
+		startButton.setBounds(12, 57, 141, 25);
+		frame.getContentPane().add(startButton);
+
+		JButton closeButton = new JButton("Beenden");
+		closeButton.setBounds(12, 90, 141, 25);
+		frame.getContentPane().add(closeButton);
 
 		final JLabel lblCount = new JLabel("Anzahl Tweets: 0");
-		lblCount.setBounds(12, 95, 199, 16);
+		lblCount.setBounds(12, 125, 199, 16);
 		frame.getContentPane().add(lblCount);
 
-		btnStart.addActionListener(new ActionListener() {
+		startButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
@@ -83,6 +95,13 @@ class MainFrame extends JFrame {
 					}
 				});
 				timer.start();
+			}
+		});
+
+		closeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainApplication.shutdown();
 			}
 		});
 

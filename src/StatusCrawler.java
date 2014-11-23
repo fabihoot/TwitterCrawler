@@ -52,6 +52,10 @@ public class StatusCrawler {
 		twitterStream.sample();
 	}
 
+	public void shutdown() {
+		twitterStream.shutdown();
+	}
+
 	private void initAuth() {
 		setAuth();
 	}
@@ -84,18 +88,16 @@ public class StatusCrawler {
 
 	public void writeXML(int taskNumber) {
 		try {
-			TransformerFactory transformerFactory = TransformerFactory
-					.newInstance();
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,
-					"yes");
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 
 			DOMSource source = new DOMSource(doc);
 
 			File targetFile = new File("tweets/tweets_aufgabe_" + taskNumber + ".xml");
 			File parent = targetFile.getParentFile();
-			if(!parent.exists() && !parent.mkdirs()){
+			if (!parent.exists() && !parent.mkdirs()) {
 			    throw new IllegalStateException("Couldn't create dir: " + parent);
 			}
 			
