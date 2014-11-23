@@ -29,5 +29,9 @@ local.properties
 # TeXlipse plugin
 .texlipse
 
+# intellij
 *.iml
 .idea/
+
+# Mac OS
+.DS_Store
