@@ -19,7 +19,7 @@ public class StatusListener implements twitter4j.StatusListener {
 	private int mTaskNumber;
 
 	// Legt die maximale Anzahl der Tweets fest die gecrawlet werden soll
-	public static final int sMaxTweets = 10;
+	public static final int sMaxTweets = 0;
 
 	public StatusListener(Document doc, Element rootElement,
 			StatusCrawler crawler, int taskNumber) {
@@ -36,7 +36,7 @@ public class StatusListener implements twitter4j.StatusListener {
 		mStatus = status;
 
 		// Abfrage ob ein Tweet gespeichert werden soll
-		boolean condition = false;
+		boolean condition = true;
 		if (condition) {
 			mTweetCounter++;
 
@@ -49,9 +49,6 @@ public class StatusListener implements twitter4j.StatusListener {
 				// einhaengen
 
 				createElementId(tweet);
-				createElementUser(tweet);
-				createElementScreenname(tweet);
-				createElementText(tweet);
 
 				System.out.println("tweet added");
 			} catch (DOMException e) {
@@ -69,15 +66,15 @@ public class StatusListener implements twitter4j.StatusListener {
 	}
 
 	/*********************************************************
-	 * 
+	 *
 	 * Hier werden die Bedingungen definiert,nach denen Tweets untersucht werden
 	 * sollen
-	 * 
+	 *
 	 *********************************************************/
 
 	// Bedingung, dass Tweets nur in einer best. Sprache gespeichert werden
-	public boolean tweetWithLanguage(String language) {
-		return mStatus.getUser().getLang().equals(language);
+	public boolean tweetWithLanguage() {
+		return false;
 	}
 
 	// Bedingung, dass nur Tweets, die ein best. Zeichen (Hashtag) enthalten,
@@ -94,14 +91,15 @@ public class StatusListener implements twitter4j.StatusListener {
 
 	// Bedingung, dass nur Tweets, die einen Lündercode enthalten, gespeichert
 	// werden
-	public boolean tweetWithCountryCode(String countryCode) {
+	public boolean tweetWithCountryCode() {
+		String countryCode = "";
 		return mStatus.getPlace().getCountryCode().equals(countryCode);
 	}
 
 	// Bedingung, dass nur Tweets gespeichert werden, welche eine bestimmtes
 	// Hashtag enthalten
 	public boolean tweetContainsSpecificHashtag() {
-		String hashtag = "#MtvStars";
+		String hashtag = "#";
 		if (tweetContainsHashtag()) {
 			for (HashtagEntity entity : mStatus.getHashtagEntities()) {
 				if (entity.getText().toLowerCase()
@@ -136,35 +134,19 @@ public class StatusListener implements twitter4j.StatusListener {
 
 	// Erstellt für jeden Tweet ein Kindelement mit dem Namen des Users
 	private void createElementUser(Element tweet) {
-		String valueUser = mStatus.getUser().getName();
+		String valueUser = null;
 		Element fieldUser = mDoc.createElement("user");
 		fieldUser.appendChild(mDoc.createTextNode(valueUser));
 		tweet.appendChild(fieldUser);
 	}
 
-	// Erstellt für jeden Tweet ein Kindelement mit dem Nickname des Users
-	private void createElementScreenname(Element tweet) {
-		String valueScreenname = mStatus.getUser().getScreenName();
-		Element fieldScreenName = mDoc.createElement("screenName");
-		fieldScreenName.appendChild(mDoc.createTextNode(valueScreenname));
-		tweet.appendChild(fieldScreenName);
-	}
-
 	// Erstellt für jeden Tweet ein Kindelement mit dem Text des Tweets
 	private void createElementText(Element tweet) {
-		String valueText = mStatus.getText();
-		Element fieldText = mDoc.createElement("text");
-		fieldText.appendChild(mDoc.createTextNode(valueText));
-		tweet.appendChild(fieldText);
 	}
 
 	// Erstellt für jeden Tweet ein Kindelement mit dem Datum und der Uhrzeit
 	// des Tweets
 	private void createElementDate(Element tweet) {
-		String valueTime = String.valueOf(mStatus.getCreatedAt());
-		Element fieldTime = mDoc.createElement("time");
-		fieldTime.appendChild(mDoc.createTextNode(valueTime));
-		tweet.appendChild(fieldTime);
 	}
 
 	// Erstellt für jeden Tweet ein Kindelement mit der eingestellten Sprache

@@ -22,10 +22,10 @@ public class StatusCrawler {
 
 	// Authentifizierungstokens für den Zugriff auf die Twitter API
 	// Bite eigene Logins eintragen!
-	private static final String CONSUMER_KEY = "jsT8x1bQpzWFvUWD10zyA";
-	private static final String CONSUMER_SECRET = "221c0J7TFprjEAmIQSdhDWzwWtPscNb8eS6jDVlc";
-	private static final String ACCESS_TOKEN = "2289566022-Q13zR4GVQSO8qJZiIxc8ureuwJJwiw5BqFqMLxD";
-	private static final String ACCESS_TOKEN_SECRET = "nXYrEgYtq3yBHJ9j6Oh44fgd6oEugOqih352VrNzcUkHu";
+	private static final String CONSUMER_KEY = "";
+	private static final String CONSUMER_SECRET = "";
+	private static final String ACCESS_TOKEN = "";
+	private static final String ACCESS_TOKEN_SECRET = "";
 
 	private ConfigurationBuilder config;
 	public StatusListener listener;
