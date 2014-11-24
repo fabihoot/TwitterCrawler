@@ -21,19 +21,21 @@ public class StatusListener implements twitter4j.StatusListener {
 	// Legt die maximale Anzahl der Tweets fest die gecrawlet werden soll
 	public static final int sMaxTweets = 10;
 
-	public StatusListener(Document doc, Element rootElement, StatusCrawler crawler, int taskNumber) {
+	public StatusListener(Document doc, Element rootElement,
+			StatusCrawler crawler, int taskNumber) {
 		mDoc = doc;
 		mRootElement = rootElement;
 		mCrawler = crawler;
 		mTaskNumber = taskNumber;
 	}
 
-	//Methode wird aufgerufen wenn ein ein Tweet gecrawlet wurde
-	//Status-Objekt enthüllt alle Informationen die von Twitter zur Verfgung gestellt werden
+	// Methode wird aufgerufen wenn ein ein Tweet gecrawlet wurde
+	// Status-Objekt enthüllt alle Informationen die von Twitter zur Verfgung
+	// gestellt werden
 	public void onStatus(Status status) {
 		mStatus = status;
 
-		//Abfrage ob ein Tweet gespeichert werden soll
+		// Abfrage ob ein Tweet gespeichert werden soll
 		boolean condition = false;
 		if (condition) {
 			mTweetCounter++;
@@ -56,7 +58,8 @@ public class StatusListener implements twitter4j.StatusListener {
 				e.printStackTrace();
 			}
 
-			//Abbruchbedingung wenn die maximale Anzahl der Tweets erreicht wurde
+			// Abbruchbedingung wenn die maximale Anzahl der Tweets erreicht
+			// wurde
 			if (mTweetCounter >= sMaxTweets) {
 				mCrawler.writeXML(mTaskNumber);
 			}
@@ -66,55 +69,56 @@ public class StatusListener implements twitter4j.StatusListener {
 	}
 
 	/*********************************************************
-	 *
-	 * Hier werden die Bedingungen definiert,nach denen Tweets
-	 * untersucht werden sollen
-	 *
+	 * 
+	 * Hier werden die Bedingungen definiert,nach denen Tweets untersucht werden
+	 * sollen
+	 * 
 	 *********************************************************/
 
-	//Bedingung, dass Tweets nur in einer best. Sprache gespeichert werden
+	// Bedingung, dass Tweets nur in einer best. Sprache gespeichert werden
 	public boolean tweetWithLanguage(String language) {
 		return mStatus.getUser().getLang().equals(language);
 	}
 
-	//Bedingung, dass nur Tweets, die ein best. Zeichen (Hashtag) enthalten, gespeichert werden
+	// Bedingung, dass nur Tweets, die ein best. Zeichen (Hashtag) enthalten,
+	// gespeichert werden
 	public boolean tweetContainsHash() {
 		String hashtag = "#";
 		return mStatus.getText().contains(hashtag);
 	}
 
-	//Bedingung, dass nur Tweets, die ein Hashtag enthalten, gespeichert werden
+	// Bedingung, dass nur Tweets, die ein Hashtag enthalten, gespeichert werden
 	public boolean tweetContainsHashtag() {
 		return mStatus.getHashtagEntities().length > 0;
 	}
 
-	//Bedingung, dass nur Tweets, die einen Lündercode enthalten, gespeichert werden
+	// Bedingung, dass nur Tweets, die einen Lündercode enthalten, gespeichert
+	// werden
 	public boolean tweetWithCountryCode(String countryCode) {
-		System.out.println(mStatus.getPlace().getCountryCode());
 		return mStatus.getPlace().getCountryCode().equals(countryCode);
 	}
 
-	//Bedingung, dass nur Tweets gespeichert werden, welche einem der übergebenen Hashtags entsprechen
-	public boolean tweetContainsHashtags(List<String> expectedHashtags) {
+	// Bedingung, dass nur Tweets gespeichert werden, welche eine bestimmtes
+	// Hashtag enthalten
+	public boolean tweetContainsSpecificHashtag() {
+		String hashtag = "#MtvStars";
 		if (tweetContainsHashtag()) {
-			for (String expectedHashtag : expectedHashtags)	{
-				for (HashtagEntity entity : mStatus.getHashtagEntities()) {
-					System.out.println(entity.getText());
-					if (entity.getText().toLowerCase().equals(expectedHashtag.toLowerCase())) {
-						return true;
-					}
+			for (HashtagEntity entity : mStatus.getHashtagEntities()) {
+				if (entity.getText().toLowerCase()
+						.equals(hashtag.toLowerCase())) {
+					return true;
 				}
 			}
+
 		}
 
 		return false;
 	}
 
 	/*********************************************************
-	 *
-	 * Hier stehen die Aufrufe für das Ablegen von
-	 * Informationen im XML
-	 *
+	 * 
+	 * Hier stehen die Aufrufe für das Ablegen von Informationen im XML
+	 * 
 	 *********************************************************/
 
 	// Erstellt für jeden Tweet ein Kindelement mit der ID des Users
@@ -195,7 +199,8 @@ public class StatusListener implements twitter4j.StatusListener {
 			Element fieldHashtags = mDoc.createElement("hashtags");
 			for (HashtagEntity hashtagEntity : allHashtags) {
 				Element fieldTag = mDoc.createElement("tag");
-				fieldTag.appendChild(mDoc.createTextNode(hashtagEntity.getText()));
+				fieldTag.appendChild(mDoc.createTextNode(hashtagEntity
+						.getText()));
 				fieldHashtags.appendChild(fieldTag);
 			}
 			tweet.appendChild(fieldHashtags);
