@@ -13,6 +13,10 @@ public class StatusHandler implements twitter4j.StatusListener {
 	private int mIgnoredTweetCounter = 0;
 	private StatusHandlerListener mListener;
 
+	public StatusHandler() {
+		mPersistenceManager =  PersistenceManager.getInstance();
+	}
+
 	public void onStatus(Status status) {
 		if (true) {
 			Element tweetNode = mPersistenceManager.appendTweet();
@@ -43,12 +47,12 @@ public class StatusHandler implements twitter4j.StatusListener {
 	}
 
 	// Bedingung, dass Tweets nur in einer best. Sprache gespeichert werden
-	public boolean statusWithLanguage(Status status, String language) {
+	private boolean statusWithLanguage(Status status, String language) {
 		return status.getUser().getLang().equals(language.toLowerCase());
 	}
 
 	// Bedingung, dass nur Tweets, die ein Hashtag enthalten, gespeichert werden
-	public boolean statusContainsHashtag(Status status) {
+	private boolean statusContainsHashtag(Status status) {
 		return status.getHashtagEntities().length > 0;
 	}
 
@@ -60,7 +64,7 @@ public class StatusHandler implements twitter4j.StatusListener {
 
 	// Bedingung, dass nur Tweets gespeichert werden, welche eine bestimmtes
 	// Hashtag enthalten
-	public boolean statusContainsHashtag(Status status, String hashtag) {
+	private boolean statusContainsHashtag(Status status, String hashtag) {
 		if (statusContainsHashtag(status)) {
 			for (HashtagEntity entity : status.getHashtagEntities()) {
 				if (entity.getText().toLowerCase()
@@ -108,10 +112,6 @@ public class StatusHandler implements twitter4j.StatusListener {
 
 	public void setTweetCounter(int tweetCounter) {
 		mTweetCounter = tweetCounter;
-	}
-
-	public StatusHandler() {
-		mPersistenceManager =  PersistenceManager.getInstance();
 	}
 
 	public interface StatusHandlerListener {
