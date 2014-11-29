@@ -21,18 +21,6 @@ public class StatusHandler implements twitter4j.StatusListener {
 		if (true) {
 			Element tweetNode = mPersistenceManager.appendTweet();
 
-			Element tagNode = mPersistenceManager.createNode("id", String.valueOf(status.getId()));
-			tweetNode.appendChild(tagNode);
-
-			Element nameNode = mPersistenceManager.createNode("name", status.getUser().getName());
-			tweetNode.appendChild(nameNode);
-
-			Element textNode = mPersistenceManager.createNode("text", status.getText());
-			tweetNode.appendChild(textNode);
-
-			Element hashtagNode = mPersistenceManager.createHashtagNode(status);
-			tweetNode.appendChild(hashtagNode);
-
 			mTweetCounter++;
 			mListener.numberOfAddedTweets(mTweetCounter);
 
@@ -46,7 +34,7 @@ public class StatusHandler implements twitter4j.StatusListener {
 		}
 	}
 
-	// Bedingung, dass Tweets nur in einer best. Sprache gespeichert werden
+	// Bedingung, dass Tweets nur in einer bestimmten Sprache gespeichert werden
 	private boolean statusWithLanguage(Status status, String language) {
 		return status.getUser().getLang().equals(language.toLowerCase());
 	}
@@ -56,7 +44,7 @@ public class StatusHandler implements twitter4j.StatusListener {
 		return status.getHashtagEntities().length > 0;
 	}
 
-	// Bedingung, dass nur Tweets, die einen Lündercode enthalten, gespeichert
+	// Bedingung, dass nur Tweets, die einen bestimmten Laendercode enthalten, gespeichert
 	// werden
 	public boolean statusWithCountryCode(Status status, String countryCode) {
 		return status.getPlace().getCountryCode().equals(countryCode.toUpperCase());

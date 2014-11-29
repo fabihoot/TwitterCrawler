@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
  * Created by micha on 26/11/14.
  */
 public class Application implements Window.WindowListener, StatusHandler.StatusHandlerListener {
+
 	private StreamManager mStreamManager;
 	private final StatusHandler mStatusHandler;
 	private final Window mWindow;
@@ -61,6 +62,7 @@ public class Application implements Window.WindowListener, StatusHandler.StatusH
 }
 
 class Window extends JFrame {
+
 	JFrame frame;
 	private WindowListener mListener;
 	private final JLabel mStoredTweetsLabel;

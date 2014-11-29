@@ -3,6 +3,7 @@ import twitter4j.TwitterStreamFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
 public class StreamManager {
+
 	private static final String CONSUMER_KEY = "";
 	private static final String CONSUMER_SECRET = "";
 	private static final String ACCESS_TOKEN = "";
